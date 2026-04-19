@@ -79,7 +79,7 @@ export default function ConcertPlatform() {
       {/* Hero Stats */}
       <div className="grid grid-cols-3 border-b border-zinc-900 py-8 px-6 text-center">
         <div>
-          <div className="text-4xl md:text-5xl font-bold">0+</div>
+          <div className="text-4xl md:text-5xl font-bold">3+</div>
           <div className="text-zinc-500 text-xs tracking-widest mt-2 font-semibold">CITIES</div>
         </div>
         <div>
