@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { MapPin, ShoppingCart, Minus, Plus, Menu } from 'lucide-react';
 
 export default function ConcertPlatform() {
-  // Hardcoded data matching the video exactly
   const tourDates =[
     { id: 1, date: "APR 25", year: "2026", city: "Los Angeles", venue: "SoFi Stadium", status: "available" },
     { id: 2, date: "APR 30", year: "2026", city: "Mexico", venue: "Madison Square Garden", status: "soldout" },
@@ -29,7 +28,7 @@ export default function ConcertPlatform() {
     },
     {
       id: 'plat',
-      name: 'V. BEV.I.P Experience',
+      name: 'V.V.I.P Experience',
       desc: 'The ultimate concert experience',
       features:['Front row seating', 'Meet & greet opportunity', 'Signed merchandise', 'Backstage tour', 'Complimentary drinks'],
       price: 1600,
@@ -37,14 +36,13 @@ export default function ConcertPlatform() {
     }
   ];
 
-  // State for interactivity (matches video's default state)
   const[selectedTicket, setSelectedTicket] = useState('vip');
-  const [quantity, setQuantity] = useState(2);
+  const [quantity, setQuantity] = useState(1);
 
   // Calculations
   const currentTicket = ticketOptions.find(t => t.id === selectedTicket);
   const subtotal = currentTicket.price * quantity;
-  const serviceFeePerTicket = 30; // Derived from the video: $60 fee for 2 tickets
+  const serviceFeePerTicket = 30;
   const totalServiceFee = serviceFeePerTicket * quantity;
   const total = subtotal + totalServiceFee;
 
@@ -55,6 +53,18 @@ export default function ConcertPlatform() {
     }
   };
 
+  const handleCheckout = () => {
+    const phoneNumber = "17053543330";
+    const message = `Order from the Concert Ticket Platform\nTicket Type: ${currentTicket.name}\nQuantity: ${quantity}\nTotal Price: $${total.toFixed(2)}`;
+    
+    // Encode the message so it works correctly in a URL
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+    
+    // Open WhatsApp in a new tab
+    window.open(whatsappUrl, '_blank');
+  };
+	
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#E5C158] selection:text-black pb-20">
       
@@ -149,7 +159,6 @@ export default function ConcertPlatform() {
                     isSelected ? 'border-[#E5C158] bg-zinc-900/40' : 'border-zinc-800 bg-transparent hover:border-zinc-600'
                   }`}
                 >
-                  {/* Most Popular Tag */}
                   {ticket.tag && (
                     <div className="absolute -top-3.5 left-8 bg-[#E5C158] text-black text-[10px] font-black tracking-widest px-3 py-1.5 uppercase rounded-sm">
                       {ticket.tag}
@@ -157,7 +166,6 @@ export default function ConcertPlatform() {
                   )}
 
                   <div className="flex items-start gap-5">
-                    {/* Custom Radio Button */}
                     <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 flex-shrink-0 transition-colors ${
                       isSelected ? 'border-[#E5C158]' : 'border-zinc-600'
                     }`}>
@@ -168,7 +176,6 @@ export default function ConcertPlatform() {
                       <h3 className="text-2xl font-bold">{ticket.name}</h3>
                       <p className="text-zinc-400 text-sm mt-2">{ticket.desc}</p>
                       
-                      {/* Features List */}
                       <ul className="mt-6 space-y-3">
                         {ticket.features.map((feature, idx) => (
                           <li key={idx} className="text-sm text-zinc-300 flex items-center gap-3">
@@ -178,7 +185,6 @@ export default function ConcertPlatform() {
                         ))}
                       </ul>
 
-                      {/* Pricing block */}
                       <div className="mt-8 flex flex-col items-start gap-1">
                         <div className="flex items-end gap-3">
                           <span className="text-4xl font-bold text-white">${ticket.price}</span>
@@ -238,12 +244,15 @@ export default function ConcertPlatform() {
             </div>
           </div>
 
-          <button className="w-full mt-10 bg-white text-black font-black tracking-[0.1em] py-4 rounded-sm flex justify-center items-center gap-3 hover:bg-zinc-200 transition-colors">
+          <button 
+            onClick={handleCheckout}
+            className="w-full mt-10 bg-white text-black font-black tracking-[0.1em] py-4 rounded-sm flex justify-center items-center gap-3 hover:bg-zinc-200 transition-colors"
+          >
             <ShoppingCart size={20} />
             CHECKOUT
           </button>
           
-          <p className="text-center text-zinc-600 text-xs mt-4">Secure checkout powered by Stripe</p>
+          <p className="text-center text-zinc-600 text-xs mt-4">Secure Checkout</p>
         </section>
 
         {/* Newsletter Section */}
