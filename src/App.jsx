@@ -164,7 +164,7 @@ export default function ConcertPlatform() {
       
       {/* Navigation */}
       <nav className="sticky top-0 z-50 bg-black/90 backdrop-blur-md border-b border-zinc-900 px-6 py-4 flex justify-between items-center">
-        <div className="text-2xl font-black tracking-[0.3em]">L I V E</div>
+        <div className="text-2xl font-black tracking-[0.3em]">DUCKCLUB</div>
         <button className="text-white hover:text-[#E5C158] transition-colors">
           <Menu size={28} />
         </button>
