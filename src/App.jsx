@@ -2,47 +2,139 @@ import React, { useState } from 'react';
 import { MapPin, ShoppingCart, Minus, Plus, Menu } from 'lucide-react';
 
 export default function ConcertPlatform() {
-  const tourDates =[
-    { id: 1, date: "APR 25", year: "2026", city: "Los Angeles", venue: "SoFi Stadium", status: "available" },
-    { id: 2, date: "APR 30", year: "2026", city: "Mexico", venue: "Madison Square Garden", status: "soldout" },
-    { id: 3, date: "MAY 06", year: "2026", city: "London", venue: "Wembley Stadium", status: "limited" },
-  ];
-
-  const ticketOptions =[
+  // Fan Cards Data
+  const fanCards =[
     {
-      id: 'ga',
-      name: 'Regular',
-      desc: 'Standing room on the main floor',
-      features: ['Standing room', 'Access to main floor', 'Commemorative wristband'],
-      price: 750,
-      originalPrice: 1000
+      id: 'fan_basic',
+      name: 'Basic Fan Card',
+      desc: 'Entry Tier',
+      features:[
+        'Digital fan membership card',
+        'Personalized welcome message',
+        'Access to private fan updates/news',
+        'Early access to content drops',
+        'Monthly shoutout opportunity'
+      ],
+      price: 500,
+      themeBorder: 'border-[#E5C158]',
+      themeBg: 'bg-[#E5C158]',
     },
     {
-      id: 'vip',
-      name: 'VIP Experience',
-      tag: 'MOST POPULAR',
-      desc: 'Premium seating with exclusive perks',
-      features:['Reserved premium seating', 'VIP entrance', 'Exclusive merch pack', 'Early venue access'],
+      id: 'fan_silver',
+      name: 'Silver Fan Card',
+      desc: 'Upgraded Access',
+      features:[
+        'Everything in Basic',
+        'Priority reply to messages',
+        'Exclusive behind-the-scenes content',
+        'Monthly Q&A session access',
+        'Discount on merchandise'
+      ],
       price: 1000,
-      originalPrice: 1500
+      themeBorder: 'border-[#C0C0C0]', // Silver
+      themeBg: 'bg-[#C0C0C0]',
     },
     {
-      id: 'plat',
-      name: 'V.V.I.P Experience',
-      desc: 'The ultimate concert experience',
-      features:['Front row seating', 'Meet & greet opportunity', 'Signed merchandise', 'Backstage tour', 'Complimentary drinks'],
-      price: 1600,
-      originalPrice: 2000
+      id: 'fan_gold',
+      name: 'Gold Fan Card',
+      desc: 'Premium Experience',
+      features:[
+        'Everything in Silver',
+        'Personalized video message (monthly or quarterly)',
+        'Private group chat access',
+        'Birthday shoutout',
+        'Early access to meet & greet tickets'
+      ],
+      price: 1500,
+      themeBorder: 'border-[#FFD700]', // Gold
+      themeBg: 'bg-[#FFD700]',
+    },
+    {
+      id: 'fan_plat',
+      name: 'Platinum / VIP Fan Card',
+      desc: 'The Ultimate Fan',
+      features:[
+        'Everything in Gold',
+        '1-on-1 video call (scheduled)',
+        'Free merch package (limited items)',
+        'Direct DM access (limited slots)',
+        'Name listed on website as top supporter'
+      ],
+      price: 2000,
+      themeBorder: 'border-[#E5E4E2]', // Platinum
+      themeBg: 'bg-[#E5E4E2]',
     }
   ];
 
-  const[selectedTicket, setSelectedTicket] = useState('vip');
+  // NEW: Meet & Greet Data
+  const meetAndGreets =[
+    {
+      id: 'mg_virtual',
+      name: 'Virtual Meet & Greet',
+      desc: 'Connect from anywhere',
+      features:[
+        '5–15 minute private video call',
+        'Screenshot/photo moment',
+        'Short conversation + fan appreciation'
+      ],
+      price: 5000,
+      themeBorder: 'border-[#E5C158]', // Default Theme
+      themeBg: 'bg-[#E5C158]',
+    },
+    {
+      id: 'mg_standard',
+      name: 'Standard Physical Meet & Greet',
+      desc: 'In-person connection',
+      features:[
+        'In-person meet',
+        'Photo + autograph',
+        'Short interaction'
+      ],
+      price: 10000,
+      themeBorder: 'border-[#E5C158]',
+      themeBg: 'bg-[#E5C158]',
+    },
+    {
+      id: 'mg_vip',
+      name: 'VIP Meet & Greet',
+      desc: 'Extended time & perks',
+      features:[
+        'Extended time (15–30 mins)',
+        'Gift package',
+        'Professional photos',
+        'Priority access (skip line)'
+      ],
+      price: 15000,
+      themeBorder: 'border-[#E5C158]',
+      themeBg: 'bg-[#E5C158]',
+    },
+    {
+      id: 'mg_ultimate',
+      name: 'Ultimate Experience',
+      desc: 'A day to remember',
+      features:[
+        'Hangout session (event/day experience)',
+        'Dinner or exclusive event access',
+        'Behind-the-scenes access',
+        'Signed exclusive item'
+      ],
+      price: 20000,
+      themeBorder: 'border-[#E5C158]',
+      themeBg: 'bg-[#E5C158]',
+    }
+  ];
+
+  // Combine arrays for calculation purposes
+  const allPackages = [...fanCards, ...meetAndGreets];
+
+  // Default to 1 quantity for high-ticket items
+  const[selectedPackage, setSelectedPackage] = useState('fan_gold');
   const [quantity, setQuantity] = useState(1);
 
   // Calculations
-  const currentTicket = ticketOptions.find(t => t.id === selectedTicket);
-  const subtotal = currentTicket.price * quantity;
-  const serviceFeePerTicket = 30;
+  const currentPackage = allPackages.find(p => p.id === selectedPackage);
+  const subtotal = currentPackage.price * quantity;
+  const serviceFeePerTicket = 30; 
   const totalServiceFee = serviceFeePerTicket * quantity;
   const total = subtotal + totalServiceFee;
 
@@ -53,18 +145,20 @@ export default function ConcertPlatform() {
     }
   };
 
+  // Checkout Handler (WhatsApp)
   const handleCheckout = () => {
-    const phoneNumber = "17053543330";
-    const message = `Order from the Concert Ticket Platform\nTicket Type: ${currentTicket.name}\nQuantity: ${quantity}\nTotal Price: $${total.toFixed(2)}`;
-    
-    // Encode the message so it works correctly in a URL
-    const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-    
-    // Open WhatsApp in a new tab
-    window.open(whatsappUrl, '_blank');
-  };
-	
+		const email = "redlightmanagementteam011@gmail.com";
+		// Format the number to have commas for readability (e.g. $5,000.00)
+		const formattedTotal = total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+		
+		const subject = "Concert Ticket Order";
+		const body = `Order from the Concert Ticket Platform\nPackage Type: ${currentPackage.name}\nQuantity: ${quantity}\nTotal Price: $${formattedTotal}`;
+		
+		const mailtoUrl = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+		
+		window.open(mailtoUrl, '_blank');
+	};
+
   return (
     <div className="min-h-screen bg-black text-white font-sans selection:bg-[#E5C158] selection:text-black pb-20">
       
@@ -77,9 +171,9 @@ export default function ConcertPlatform() {
       </nav>
 
       {/* Hero Stats */}
-      <div className="grid grid-cols-3 border-b border-zinc-900 py-8 px-6 text-center">
+      <div className="grid grid-cols-3 border-b border-zinc-900 py-8 px-6 text-center max-w-3xl mx-auto">
         <div>
-          <div className="text-4xl md:text-5xl font-bold">3+</div>
+          <div className="text-4xl md:text-5xl font-bold">30+</div>
           <div className="text-zinc-500 text-xs tracking-widest mt-2 font-semibold">CITIES</div>
         </div>
         <div>
@@ -87,192 +181,190 @@ export default function ConcertPlatform() {
           <div className="text-zinc-500 text-xs tracking-widest mt-2 font-semibold">FANS</div>
         </div>
         <div>
-          <div className="text-4xl md:text-5xl font-bold">100</div>
+          <div className="text-4xl md:text-5xl font-bold">100+</div>
           <div className="text-zinc-500 text-xs tracking-widest mt-2 font-semibold">SHOWS</div>
         </div>
       </div>
 
-      <main className="max-w-3xl mx-auto px-6">
-        
-        {/* Tour Dates Section */}
-        <section className="py-24">
-          <div className="text-center mb-16">
-            <h3 className="text-zinc-500 tracking-[0.3em] text-sm font-semibold uppercase mb-4">Upcoming Shows</h3>
-            <h2 className="text-5xl md:text-6xl font-black tracking-tight">Tour Dates</h2>
-          </div>
-
-          <div className="flex flex-col">
-            {tourDates.map((show) => (
-              <div key={show.id} className="flex justify-between items-center py-8 border-b border-zinc-900 group">
-                <div className="flex gap-6 items-start w-2/3">
-                  <div className="text-center min-w-[80px]">
-                    <div className="text-3xl font-bold tracking-tight">{show.date}</div>
-                    <div className="text-zinc-500 text-sm font-medium mt-1">{show.year}</div>
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 font-semibold text-xl">
-                      <MapPin size={18} className="text-zinc-500" />
-                      {show.city}
-                    </div>
-                    <div className="text-zinc-400 text-sm ml-7 mt-1">{show.venue}</div>
-                  </div>
-                </div>
-                <div className="w-1/3 flex flex-col items-end justify-center gap-3">
-                  {show.status === 'limited' && (
-                    <span className="text-[#E5C158] text-[11px] font-bold tracking-[0.2em] uppercase">Limited</span>
-                  )}
-                  {show.status === 'soldout' ? (
-                    <span className="text-zinc-600 text-sm font-bold tracking-[0.2em] mt-2">SOLD OUT</span>
-                  ) : (
-                    <button className="border border-zinc-700 hover:border-white text-white px-6 py-3 text-xs font-bold tracking-[0.2em] transition-all rounded-sm hover:bg-white hover:text-black">
-                      GET TICKETS
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="mt-12 text-center">
-            <button className="border border-zinc-700 hover:border-white text-white px-8 py-4 text-sm font-bold tracking-[0.2em] transition-all rounded-sm w-full md:w-auto">
-              VIEW ALL DATES
-            </button>
-          </div>
-        </section>
-
-        {/* Ticket Selection Section */}
+      {/* Main Container - Expanded max width to fit 2 columns perfectly */}
+      <main className="max-w-6xl mx-auto px-6">
+        {/* NEW: 2-Column Package Selection Section */}
         <section className="py-24 border-t border-zinc-900">
-          <div className="text-center mb-16">
-            <h3 className="text-zinc-500 tracking-[0.3em] text-sm font-semibold uppercase mb-4">Secure Your Spot</h3>
-            <h2 className="text-5xl md:text-6xl font-black tracking-tight">Select Your Tickets</h2>
+          <div className="text-center mb-20">
+            <h3 className="text-zinc-500 tracking-[0.3em] text-sm font-semibold uppercase mb-4">Secure Your Experience</h3>
+            <h2 className="text-5xl md:text-6xl font-black tracking-tight">Select Your Package</h2>
           </div>
 
-          <div className="flex flex-col gap-6">
-            {ticketOptions.map((ticket) => {
-              const isSelected = selectedTicket === ticket.id;
-              
-              return (
-                <div 
-                  key={ticket.id}
-                  onClick={() => setSelectedTicket(ticket.id)}
-                  className={`relative p-8 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
-                    isSelected ? 'border-[#E5C158] bg-zinc-900/40' : 'border-zinc-800 bg-transparent hover:border-zinc-600'
-                  }`}
-                >
-                  {ticket.tag && (
-                    <div className="absolute -top-3.5 left-8 bg-[#E5C158] text-black text-[10px] font-black tracking-widest px-3 py-1.5 uppercase rounded-sm">
-                      {ticket.tag}
-                    </div>
-                  )}
-
-                  <div className="flex items-start gap-5">
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 flex-shrink-0 transition-colors ${
-                      isSelected ? 'border-[#E5C158]' : 'border-zinc-600'
-                    }`}>
-                      {isSelected && <div className="w-3 h-3 bg-[#E5C158] rounded-full" />}
-                    </div>
-
-                    <div className="w-full">
-                      <h3 className="text-2xl font-bold">{ticket.name}</h3>
-                      <p className="text-zinc-400 text-sm mt-2">{ticket.desc}</p>
-                      
-                      <ul className="mt-6 space-y-3">
-                        {ticket.features.map((feature, idx) => (
-                          <li key={idx} className="text-sm text-zinc-300 flex items-center gap-3">
-                            <div className="w-1.5 h-1.5 bg-[#E5C158] rounded-full flex-shrink-0" />
-                            {feature}
-                          </li>
-                        ))}
-                      </ul>
-
-                      <div className="mt-8 flex flex-col items-start gap-1">
-                        <div className="flex items-end gap-3">
-                          <span className="text-4xl font-bold text-white">${ticket.price}</span>
-                          <span className="text-zinc-500 line-through text-xl pb-1">${ticket.originalPrice}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            
+            {/* Column 1: Fan Cards */}
+            <div>
+              <h3 className="text-3xl font-black tracking-tight mb-8 text-center lg:text-left">Fan Memberships</h3>
+              <div className="flex flex-col gap-6">
+                {fanCards.map((pkg) => {
+                  const isSelected = selectedPackage === pkg.id;
+                  return (
+                    <div 
+                      key={pkg.id}
+                      onClick={() => setSelectedPackage(pkg.id)}
+                      className={`relative p-8 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                        isSelected ? `${pkg.themeBorder} bg-zinc-900/40` : 'border-zinc-800 bg-transparent hover:border-zinc-600'
+                      }`}
+                    >
+                      <div className="flex items-start gap-5">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 flex-shrink-0 transition-colors ${
+                          isSelected ? pkg.themeBorder : 'border-zinc-600'
+                        }`}>
+                          {isSelected && <div className={`w-3 h-3 ${pkg.themeBg} rounded-full`} />}
                         </div>
-                        <span className="text-zinc-500 text-xs font-semibold tracking-widest uppercase">Per Ticket</span>
+
+                        <div className="w-full">
+                          <h3 className="text-2xl font-bold">{pkg.name}</h3>
+                          <p className="text-zinc-400 text-sm mt-2">{pkg.desc}</p>
+                          
+                          <ul className="mt-6 space-y-3">
+                            {pkg.features.map((feature, idx) => (
+                              <li key={idx} className="text-sm text-zinc-300 flex items-center gap-3">
+                                <div className={`w-1.5 h-1.5 ${pkg.themeBg} rounded-full flex-shrink-0`} />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+
+                          <div className="mt-8 flex flex-col items-start gap-1">
+                            <span className="text-4xl font-bold text-white">${pkg.price.toLocaleString()}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Column 2: Meet & Greets */}
+            <div>
+              <h3 className="text-3xl font-black tracking-tight mb-8 text-center lg:text-left mt-16 lg:mt-0">Meet & Greet</h3>
+              <div className="flex flex-col gap-6">
+                {meetAndGreets.map((pkg) => {
+                  const isSelected = selectedPackage === pkg.id;
+                  return (
+                    <div 
+                      key={pkg.id}
+                      onClick={() => setSelectedPackage(pkg.id)}
+                      className={`relative p-8 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                        isSelected ? `${pkg.themeBorder} bg-zinc-900/40` : 'border-zinc-800 bg-transparent hover:border-zinc-600'
+                      }`}
+                    >
+                      <div className="flex items-start gap-5">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center mt-1 flex-shrink-0 transition-colors ${
+                          isSelected ? pkg.themeBorder : 'border-zinc-600'
+                        }`}>
+                          {isSelected && <div className={`w-3 h-3 ${pkg.themeBg} rounded-full`} />}
+                        </div>
+
+                        <div className="w-full">
+                          <h3 className="text-2xl font-bold">{pkg.name}</h3>
+                          <p className="text-zinc-400 text-sm mt-2">{pkg.desc}</p>
+                          
+                          <ul className="mt-6 space-y-3">
+                            {pkg.features.map((feature, idx) => (
+                              <li key={idx} className="text-sm text-zinc-300 flex items-center gap-3">
+                                <div className={`w-1.5 h-1.5 ${pkg.themeBg} rounded-full flex-shrink-0`} />
+                                {feature}
+                              </li>
+                            ))}
+                          </ul>
+
+                          <div className="mt-8 flex flex-col items-start gap-1">
+                            <span className="text-4xl font-bold text-white">${pkg.price.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
           </div>
         </section>
 
-        {/* Order Summary Section */}
-        <section className="py-12 px-8 bg-[#0a0a0a] rounded-2xl border border-zinc-900 mb-24">
-          <h3 className="text-2xl font-bold mb-8">Order Summary</h3>
-          
-          <div className="flex justify-between items-center py-4 border-b border-zinc-900">
-            <span className="text-zinc-400">Ticket Type</span>
-            <span className="font-semibold">{currentTicket.name}</span>
-          </div>
-          
-          <div className="flex justify-between items-center py-6 border-b border-zinc-900">
-            <span className="text-zinc-400">Quantity</span>
-            <div className="flex items-center gap-4 bg-zinc-900 rounded-sm border border-zinc-800 p-1">
-              <button 
-                onClick={() => handleQuantityChange(-1)}
-                className="w-8 h-8 flex items-center justify-center hover:bg-zinc-800 rounded transition-colors"
-                disabled={quantity <= 1}
-              >
-                <Minus size={16} className={quantity <= 1 ? "text-zinc-600" : "text-white"} />
-              </button>
-              <span className="w-4 text-center font-bold">{quantity}</span>
-              <button 
-                onClick={() => handleQuantityChange(1)}
-                className="w-8 h-8 flex items-center justify-center hover:bg-zinc-800 rounded transition-colors"
-              >
-                <Plus size={16} />
-              </button>
+        {/* Order Summary Section - Constrained to max-w-3xl */}
+        <div className="max-w-3xl mx-auto">
+          <section className="py-12 px-8 bg-[#0a0a0a] rounded-2xl border border-zinc-900 mb-24">
+            <h3 className="text-2xl font-bold mb-8">Order Summary</h3>
+            
+            <div className="flex justify-between items-center py-4 border-b border-zinc-900">
+              <span className="text-zinc-400">Package Type</span>
+              <span className="font-semibold text-right max-w-[60%]">{currentPackage.name}</span>
             </div>
-          </div>
+            
+            <div className="flex justify-between items-center py-6 border-b border-zinc-900">
+              <span className="text-zinc-400">Quantity</span>
+              <div className="flex items-center gap-4 bg-zinc-900 rounded-sm border border-zinc-800 p-1">
+                <button 
+                  onClick={() => handleQuantityChange(-1)}
+                  className="w-8 h-8 flex items-center justify-center hover:bg-zinc-800 rounded transition-colors"
+                  disabled={quantity <= 1}
+                >
+                  <Minus size={16} className={quantity <= 1 ? "text-zinc-600" : "text-white"} />
+                </button>
+                <span className="w-4 text-center font-bold">{quantity}</span>
+                <button 
+                  onClick={() => handleQuantityChange(1)}
+                  className="w-8 h-8 flex items-center justify-center hover:bg-zinc-800 rounded transition-colors"
+                >
+                  <Plus size={16} />
+                </button>
+              </div>
+            </div>
 
-          <div className="pt-6 space-y-4">
-            <div className="flex justify-between text-zinc-400">
-              <span>Subtotal</span>
-              <span>${subtotal.toFixed(2)}</span>
+            <div className="pt-6 space-y-4">
+              <div className="flex justify-between text-zinc-400">
+                <span>Subtotal</span>
+                <span>${subtotal.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              </div>
+              <div className="flex justify-between text-zinc-400">
+                <span>Service Fees</span>
+                <span>${totalServiceFee.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              </div>
+              <div className="flex justify-between items-end pt-4">
+                <span className="text-xl font-bold">Total</span>
+                <span className="text-3xl font-black">${total.toLocaleString(undefined, {minimumFractionDigits: 2})}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-zinc-400">
-              <span>Service Fees</span>
-              <span>${totalServiceFee.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between items-end pt-4">
-              <span className="text-xl font-bold">Total</span>
-              <span className="text-3xl font-black">${total.toFixed(2)}</span>
-            </div>
-          </div>
 
-          <button 
-            onClick={handleCheckout}
-            className="w-full mt-10 bg-white text-black font-black tracking-[0.1em] py-4 rounded-sm flex justify-center items-center gap-3 hover:bg-zinc-200 transition-colors"
-          >
-            <ShoppingCart size={20} />
-            CHECKOUT
-          </button>
-          
-          <p className="text-center text-zinc-600 text-xs mt-4">Secure Checkout</p>
-        </section>
+            <button 
+              onClick={handleCheckout}
+              className="w-full mt-10 bg-white text-black font-black tracking-[0.1em] py-4 rounded-sm flex justify-center items-center gap-3 hover:bg-zinc-200 transition-colors"
+            >
+              <ShoppingCart size={20} />
+              CHECKOUT
+            </button>
+            
+            <p className="text-center text-zinc-600 text-xs mt-4">Secure checkout powered by Stripe</p>
+          </section>
 
-        {/* Newsletter Section */}
-        <section className="py-24 border-t border-zinc-900 text-center">
-          <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Never Miss a Show</h2>
-          <p className="text-zinc-400 max-w-md mx-auto mb-10">
-            Subscribe to get exclusive presale access and tour updates delivered to your inbox.
-          </p>
-          
-          <form className="max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
-            <input 
-              type="email" 
-              placeholder="Enter your email" 
-              className="w-full bg-transparent border-b-2 border-white pb-3 px-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#E5C158] transition-colors"
-            />
-            <p className="text-zinc-600 text-[11px] mt-4">
-              By subscribing, you agree to our Privacy Policy.<br/>Unsubscribe anytime.
+          {/* Newsletter Section */}
+          <section className="py-24 border-t border-zinc-900 text-center">
+            <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Never Miss an Update</h2>
+            <p className="text-zinc-400 max-w-md mx-auto mb-10">
+              Subscribe to get exclusive presale access and VIP updates delivered to your inbox.
             </p>
-          </form>
-        </section>
+            
+            <form className="max-w-md mx-auto" onSubmit={(e) => e.preventDefault()}>
+              <input 
+                type="email" 
+                placeholder="Enter your email" 
+                className="w-full bg-transparent border-b-2 border-white pb-3 px-2 text-white placeholder-zinc-500 focus:outline-none focus:border-[#E5C158] transition-colors"
+              />
+              <p className="text-zinc-600 text-[11px] mt-4">
+                By subscribing, you agree to our Privacy Policy.<br/>Unsubscribe anytime.
+              </p>
+            </form>
+          </section>
+        </div>
       </main>
 
       {/* Footer */}
