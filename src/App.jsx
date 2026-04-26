@@ -188,7 +188,7 @@ export default function ConcertPlatform() {
 
       {/* Main Container - Expanded max width to fit 2 columns perfectly */}
       <main className="max-w-6xl mx-auto px-6">
-        {/* NEW: 2-Column Package Selection Section */}
+        {/* 2-Column Package Selection Section */}
         <section className="py-24 border-t border-zinc-900">
           <div className="text-center mb-20">
             <h3 className="text-zinc-500 tracking-[0.3em] text-sm font-semibold uppercase mb-4">Secure Your Experience</h3>
